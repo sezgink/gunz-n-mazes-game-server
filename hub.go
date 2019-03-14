@@ -4,9 +4,33 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func checkMessage(message []byte) bool {
+	str := fmt.Sprintf("%s", message)
+	fmt.Println("Cheking the message...")
+	msec := time.Now().UnixNano() / 1000000
+	fmt.Println(fmt.Sprintf("Time is %d", msec))
+	fmt.Println(str)
+	if str == "deneme" {
+		return true
+
+	} else {
+		return false
+	}
+}
+
+type PlayerData struct {
+	posX float32
+	posY float32
+	vx   float32
+	vy   float32
+}
+
+func parsePlayerData(message []byte) bool {
 	str := fmt.Sprintf("%s", message)
 	fmt.Println("Cheking the message...")
 	fmt.Println(str)
