@@ -58,7 +58,7 @@ func (h *Hub) run() {
 			checkMessage(message)
 			for client := range h.clients {
 				select {
-				case client.send <- []byte(fmt.Sprintf("%v", checkMessage(message))):
+				case client.send <- []byte(message):
 				default:
 					close(client.send)
 					delete(h.clients, client)
