@@ -72,7 +72,10 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		c.hub.broadcast <- message
+		//c.hub.broadcast <- message
+		sendPack := MCMessage{sender: c, message: message}
+		c.hub.broadcast <- sendPack
+
 	}
 }
 
