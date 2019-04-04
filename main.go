@@ -28,15 +28,14 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 func main() {
 	flag.Parse()
 	hub := newHub()
-	hub2 := newHub()
+	hub.game = newGame(hub)
+	go hub.game.runGame()
+
 	go hub.run()
-	go hub2.run()
+
 	http.HandleFunc("/", serveHome)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
-	})
-	http.HandleFunc("/ws2", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub2, w, r)
 	})
 
 	err := http.ListenAndServe(*addr, nil)

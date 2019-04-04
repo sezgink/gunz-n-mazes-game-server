@@ -48,6 +48,8 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+
+	player *PlayerData
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -74,7 +76,8 @@ func (c *Client) readPump() {
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		//c.hub.broadcast <- message
 		sendPack := MCMessage{sender: c, message: message}
-		c.hub.broadcast <- sendPack
+		//c.hub.broadcast <- sendPack
+		c.hub.clientPuller <- sendPack
 
 	}
 }
