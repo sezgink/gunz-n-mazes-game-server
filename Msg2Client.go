@@ -1,11 +1,12 @@
 package main
 
 type CreatorMessage struct {
-	player2Create PlayerData
+	players2Create []PlayerData
 }
 type UpdateMessage struct {
+	players2Update []PlayerData
 }
-
 type Msg2Client struct {
-	players []PlayerData
+	creatorMessage CreatorMessage
+	updateMessage  UpdateMessage
 }
