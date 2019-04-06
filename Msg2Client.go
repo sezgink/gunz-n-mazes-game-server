@@ -13,8 +13,8 @@ type DestroyMessage struct {
 	players2Destroy []PlayerData
 }
 type Msg2Client struct {
-	creatorMessage CreatorMessage
-	updateMessage  UpdateMessage
+	creatorMessage *CreatorMessage
+	updateMessage  *UpdateMessage
 }
 
 func JSONMsg2Client(msg *Msg2Client) []byte {

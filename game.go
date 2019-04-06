@@ -42,6 +42,17 @@ func newGame(h *Hub) *Game {
 }
 func OnTick(g *Game) {
 	//g.distribute<-
+	Msg2Client := &Msg2Client{
+		creatorMessage: new(CreatorMessage),
+		updateMessage:  new(UpdateMessage),
+	}
+	for cli := range g.clients {
+		if !cli.player.isCreated {
+			cli.send <- []byte("We have a brother")
+
+		}
+		cli.send <- []byte("We have a brother")
+	}
 
 }
 
