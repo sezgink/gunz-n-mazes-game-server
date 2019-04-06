@@ -46,6 +46,7 @@ func OnTick(g *Game) {
 		creatorMessage: new(CreatorMessage),
 		updateMessage:  new(UpdateMessage),
 	}
+	//Msg2Client.creatorMessage.players2Create
 	for cli := range g.clients {
 		if !cli.player.isCreated {
 			cli.send <- []byte("We have a brother")
