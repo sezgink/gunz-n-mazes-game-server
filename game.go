@@ -55,7 +55,9 @@ func (g *Game) runGame() {
 		case client := <-g.register:
 			g.clients[client] = true
 			client.player = &PlayerData{id: g.playerCounter, posX: 0, posY: 0, rot: 0, vx: 0, vy: 0, isCreated: false}
-			client.send <- 
+			//Send client create playerMan message
+			//client.send <-
+
 			//fmt.Println("Yeah registered")
 			/*
 				select {
