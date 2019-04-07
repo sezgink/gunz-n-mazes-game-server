@@ -12,6 +12,7 @@ type CreatorMessage struct {
 	isOwner       bool
 	player2Create *PlayerData
 	//fires2Create  []FireData
+	flag int
 }
 
 func CreatePlrCreatorMessage(pData *PlayerData) []byte {
@@ -20,6 +21,8 @@ func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 	cm := new(CreatorMessage)
 	cm.player2Create = pData
 	cm.isOwner = true
+
+	cm.flag = 0
 
 	plr, err := json.Marshal(cm)
 	if err == nil {
@@ -33,6 +36,8 @@ func CreateCreatorMessage(pData *PlayerData) []byte {
 	cm.player2Create = pData
 	cm.isOwner = false
 
+	cm.flag = 0
+
 	plr, err := json.Marshal(cm)
 	if err == nil {
 		return plr
@@ -42,6 +47,7 @@ func CreateCreatorMessage(pData *PlayerData) []byte {
 
 type UpdateMessage struct {
 	players2Update []PlayerData
+	flag           int
 }
 type DestroyMessage struct {
 	players2Destroy []PlayerData
@@ -49,6 +55,30 @@ type DestroyMessage struct {
 type Msg2Client struct {
 	creatorMessage *CreatorMessage
 	updateMessage  *UpdateMessage
+}
+
+func createUpdateMessage(g *Game) []byte {
+	/*
+		b := make([]PlayerData, len(g.clients))
+		for cli := range g.clients {
+			b = append(b, *cli.player)
+		}
+	*/
+	b := make([]PlayerData, len(g.clients))
+	for cli := range g.clients {
+		b = append(b, *cli.player)
+	}
+	updateMessage := &UpdateMessage{
+		players2Update: b[0:len(g.clients)],
+		flag:           1,
+	}
+
+	plr, err := json.Marshal(updateMessage)
+	if err == nil {
+		return plr
+	}
+	return nil
+
 }
 
 func JSONMsg2Client(msg *Msg2Client) []byte {
