@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 /*
 type CreatorMessage struct {
@@ -74,8 +77,13 @@ func createUpdateMessage(g *Game) []byte {
 	}
 
 	plr, err := json.Marshal(updateMessage)
+	fmt.Println(plr)
+
 	if err == nil {
 		return plr
+	} else {
+		fmt.Println(err.Error())
+
 	}
 	return nil
 

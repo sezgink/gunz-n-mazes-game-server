@@ -80,8 +80,11 @@ func (h *Hub) run() {
 	for {
 		select {
 		case client := <-h.register:
+			fmt.Println("Registered to hub")
 			h.clients[client] = true
+			fmt.Println("Pomping to g.game")
 			h.game.register <- client
+			fmt.Println("Pomped to g.game")
 			//fmt.Println("Yeah registered")
 			/*
 				select {

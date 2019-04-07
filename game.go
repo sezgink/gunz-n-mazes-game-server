@@ -4,6 +4,8 @@
 
 package main
 
+import "fmt"
+
 type Game struct {
 	// Registered clients.
 	clients map[*Client]bool
@@ -41,7 +43,9 @@ func newGame(h *Hub) *Game {
 	}
 }
 func OnTick(g *Game) {
+	fmt.Println("Tick")
 	g.distribute <- createUpdateMessage(g)
+
 	/*
 		Msg2Client := &Msg2Client{
 			creatorMessage: new(CreatorMessage),
@@ -62,13 +66,17 @@ func OnTick(g *Game) {
 }
 
 func (g *Game) runGame() {
+	fmt.Println("Game run")
 	for {
 		if g.tickCounter > 1000 {
 			g.tickCounter = 0
+			fmt.Println("Tick If")
 			OnTick(g)
 		}
 		select {
 		case client := <-g.register:
+			fmt.Println("One registered")
+
 			g.clients[client] = true
 			client.player = &PlayerData{id: g.playerCounter, posX: 0, posY: 0, rot: 0, vx: 0, vy: 0}
 			//Send client create playerMan message
@@ -113,6 +121,7 @@ func (g *Game) runGame() {
 					}
 				}
 			*/
+			fmt.Println("Distrtubute")
 			g.hub.broadcast <- message
 		}
 		g.tickCounter += 1

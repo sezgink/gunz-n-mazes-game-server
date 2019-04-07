@@ -29,8 +29,6 @@ func main() {
 	flag.Parse()
 	hub := newHub()
 	hub.game = newGame(hub)
-	go hub.game.runGame()
-
 	go hub.run()
 
 	http.HandleFunc("/", serveHome)
