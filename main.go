@@ -36,8 +36,8 @@ func main() {
 		serveWs(hub, w, r)
 	})
 	http.HandleFunc("/ws2", func(w http.ResponseWriter, r *http.Request) {
-                serveWs(hub2, w, r)
-        })
+		serveWs(hub2, w, r)
+	})
 
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {

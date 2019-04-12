@@ -35,6 +35,8 @@ var (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	//Check origin must add later, this is not secure but for development temporary it is so
+	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -70,7 +72,10 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		c.hub.broadcast <- message
+		//c.hub.broadcast <- message
+		sendPack := MCMessage{sender: c, message: message}
+		c.hub.broadcast <- sendPack
+
 	}
 }
 
@@ -122,6 +127,8 @@ func (c *Client) writePump() {
 
 // serveWs handles websocket requests from the peer.
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	//Check origin must add later, this is not secure but for development temporary it is so
+	//upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
