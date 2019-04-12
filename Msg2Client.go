@@ -21,6 +21,7 @@ type CreatorMessage struct {
 func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 	//plr, err := json.Marshal(player)
 	//pData.isOwner = true
+
 	cm := new(CreatorMessage)
 	cm.player2Create = pData
 	cm.isOwner = true
@@ -35,6 +36,7 @@ func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 }
 func CreateCreatorMessage(pData *PlayerData) []byte {
 	//plr, err := json.Marshal(player)
+
 	cm := new(CreatorMessage)
 	cm.player2Create = pData
 	cm.isOwner = false

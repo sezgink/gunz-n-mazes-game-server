@@ -76,15 +76,22 @@ func newHub() *Hub {
 
 func (h *Hub) run() {
 	h.game = newGame(h)
-	h.game.runGame()
+	go h.game.runGame()
 	for {
 		select {
 		case client := <-h.register:
-			fmt.Println("Registered to hub")
 			h.clients[client] = true
-			fmt.Println("Pomping to g.game")
-			h.game.register <- client
-			fmt.Println("Pomped to g.game")
+
+			select {
+			case h.game.register <- client:
+			}
+			//fmt.Println("Before broad")
+			//h.game.register <- client
+			/*
+				select {
+				case h.broadcast <- []byte("Registered one"):
+				}
+			*/
 			//fmt.Println("Yeah registered")
 			/*
 				select {
@@ -113,16 +120,30 @@ func (h *Hub) run() {
 			}
 
 		case message := <-h.broadcast:
-			//checkMessage(message)
+			//fmt.Println("Broad message firsst")
 
 			for client := range h.clients {
+				//fmt.Println("Client broad")
 				select {
-				case client.send <- []byte(message):
+				case client.send <- message:
 				default:
 					close(client.send)
 					delete(h.clients, client)
 				}
 			}
+			//checkMessage(message)
+
+			/*
+				for client := range h.clients {
+					select {
+					case client.send <- []byte(message):
+					default:
+						close(client.send)
+						delete(h.clients, client)
+					}
+				}
+			*/
+
 		}
 	}
 }

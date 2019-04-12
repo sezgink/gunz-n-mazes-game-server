@@ -68,20 +68,25 @@ func OnTick(g *Game) {
 func (g *Game) runGame() {
 	fmt.Println("Game run")
 	for {
-		if g.tickCounter > 1000 {
-			g.tickCounter = 0
-			fmt.Println("Tick If")
-			OnTick(g)
-		}
+		/*
+			if g.tickCounter > 1000 {
+				g.tickCounter = 0
+				fmt.Println("Tick If")
+				OnTick(g)
+			}
+		*/
+
 		select {
 		case client := <-g.register:
-			fmt.Println("One registered")
+			//fmt.Println("One registered")
+			//g.hub.broadcast <- []byte("One registered")
 
 			g.clients[client] = true
 			client.player = &PlayerData{id: g.playerCounter, posX: 0, posY: 0, rot: 0, vx: 0, vy: 0}
 			//Send client create playerMan message
 			//client.send <-
 			client.send <- CreatePlrCreatorMessage(client.player)
+			fmt.Println(CreatePlrCreatorMessage(client.player))
 			for cli := range g.clients {
 				if cli != client {
 					cli.send <- CreateCreatorMessage(client.player)
@@ -105,10 +110,12 @@ func (g *Game) runGame() {
 		case client := <-g.unregister:
 			if _, ok := g.clients[client]; ok {
 				delete(g.clients, client)
-				close(client.send)
+				//close(client.send)
 			}
 
 		case message := <-g.distribute:
+			fmt.Println("Distrtubute")
+			g.hub.broadcast <- message
 			//checkMessage(message)
 
 			/*
@@ -121,9 +128,9 @@ func (g *Game) runGame() {
 					}
 				}
 			*/
-			fmt.Println("Distrtubute")
-			g.hub.broadcast <- message
+
 		}
-		g.tickCounter += 1
+		fmt.Println("End select")
+		//g.tickCounter += 1
 	}
 }
