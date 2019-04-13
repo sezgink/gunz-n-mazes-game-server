@@ -83,6 +83,7 @@ func (g *Game) runGame() {
 
 			g.clients[client] = true
 			client.player = &PlayerData{Id: g.playerCounter, PosX: 0, PosY: 0, Rot: 0, Vx: 0, Vy: 0}
+			g.playerCounter += 1
 			//Send client create playerMan message
 			//client.send <-
 			select {
