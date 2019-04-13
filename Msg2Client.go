@@ -12,8 +12,11 @@ type CreatorMessage struct {
 }
 */
 type CreatorMessage struct {
-	isOwner       bool
-	player2Create *PlayerData
+	isOwner bool
+	//player2Create *PlayerData
+	//This one probably should go to data than poiniter
+	player2Create PlayerData
+
 	//fires2Create  []FireData
 	flag int
 }
@@ -23,10 +26,12 @@ func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 	//pData.isOwner = true
 
 	cm := new(CreatorMessage)
-	cm.player2Create = pData
+	cm.player2Create = *pData
 	cm.isOwner = true
 
 	cm.flag = 0
+
+	fmt.Println("Cm is", *cm)
 
 	plr, err := json.Marshal(cm)
 	if err == nil {
@@ -38,7 +43,7 @@ func CreateCreatorMessage(pData *PlayerData) []byte {
 	//plr, err := json.Marshal(player)
 
 	cm := new(CreatorMessage)
-	cm.player2Create = pData
+	cm.player2Create = *pData
 	cm.isOwner = false
 
 	cm.flag = 0
