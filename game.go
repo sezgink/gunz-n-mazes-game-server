@@ -82,7 +82,7 @@ func (g *Game) runGame() {
 			//g.hub.broadcast <- []byte("One registered")
 
 			g.clients[client] = true
-			client.player = &PlayerData{id: g.playerCounter, posX: 0, posY: 0, rot: 0, vx: 0, vy: 0}
+			client.player = &PlayerData{Id: g.playerCounter, PosX: 0, PosY: 0, Rot: 0, Vx: 0, Vy: 0}
 			//Send client create playerMan message
 			//client.send <-
 			select {

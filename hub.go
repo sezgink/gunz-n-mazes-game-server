@@ -32,7 +32,7 @@ func checkMessage(message []byte) bool {
 			panic(err)
 		}
 
-		fmt.Println(fmt.Sprintf("Player id is %d", pData.id))
+		fmt.Println(fmt.Sprintf("Player id is %d", pData.Id))
 	}
 
 	if str == "deneme" {

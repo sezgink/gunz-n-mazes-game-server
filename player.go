@@ -3,12 +3,12 @@ package main
 import "encoding/json"
 
 type PlayerData struct {
-	id   int16
-	posX float32
-	posY float32
-	rot  float32
-	vx   float32
-	vy   float32
+	Id   int16
+	PosX float32
+	PosY float32
+	Rot  float32
+	Vx   float32
+	Vy   float32
 }
 
 func ParsePlayerJSON(jsonData []byte) *PlayerData {
