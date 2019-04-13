@@ -33,9 +33,12 @@ func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 
 	fmt.Println("Cm is", *cm)
 
-	plr, err := json.Marshal(cm)
+	plr, err := json.Marshal(*cm)
 	if err == nil {
+		fmt.Println("Plr is", plr)
 		return plr
+	} else {
+		fmt.Println("err is", err)
 	}
 	return nil
 }
@@ -48,7 +51,7 @@ func CreateCreatorMessage(pData *PlayerData) []byte {
 
 	cm.flag = 0
 
-	plr, err := json.Marshal(cm)
+	plr, err := json.Marshal(*cm)
 	if err == nil {
 		return plr
 	}
