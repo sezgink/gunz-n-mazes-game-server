@@ -43,11 +43,11 @@ func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 
 	cm.Flag = 0
 
-	fmt.Println("Cm is", *cm)
+	//fmt.Println("Cm is", *cm)
 
 	plr, err := json.Marshal(*cm)
 	if err == nil {
-		fmt.Println("Plr is", plr)
+		//fmt.Println("Plr is", plr)
 		return plr
 	} else {
 		fmt.Println("err is", err)

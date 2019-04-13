@@ -89,7 +89,7 @@ func (g *Game) runGame() {
 			case client.send <- CreatePlrCreatorMessage(client.player):
 			}
 			//client.send <- CreatePlrCreatorMessage(client.player)
-			fmt.Println(CreatePlrCreatorMessage(client.player))
+			//fmt.Println(CreatePlrCreatorMessage(client.player))
 
 			for cli := range g.clients {
 				if cli != client {
@@ -99,7 +99,7 @@ func (g *Game) runGame() {
 					//cli.send <- CreateCreatorMessage(client.player)
 				}
 			}
-			fmt.Println("Yeah registered")
+			//fmt.Println("Yeah registered")
 			/*
 				select {
 				case client.send <- []byte("Welcome brother"):
@@ -121,7 +121,7 @@ func (g *Game) runGame() {
 			}
 
 		case message := <-g.distribute:
-			fmt.Println("Distrtubute")
+			//fmt.Println("Distrtubute")
 			select {
 			case g.hub.broadcast <- message:
 			}
@@ -140,7 +140,7 @@ func (g *Game) runGame() {
 			*/
 
 		}
-		fmt.Println("End select")
+		//fmt.Println("End select")
 		//g.tickCounter += 1
 	}
 }

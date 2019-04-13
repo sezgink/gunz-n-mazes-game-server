@@ -120,8 +120,8 @@ func (h *Hub) run() {
 			}
 
 		case message := <-h.broadcast:
-			fmt.Println("Broad message firsst")
-			fmt.Println(message)
+			//fmt.Println("Broad message firsst")
+			//fmt.Println(message)
 			for client := range h.clients {
 				//fmt.Println("Client broad")
 				select {

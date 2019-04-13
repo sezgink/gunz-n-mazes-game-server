@@ -6,7 +6,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -97,8 +96,8 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			fmt.Println("Sending in client: Message is :")
-			fmt.Println(message)
+			//fmt.Println("Sending in client: Message is :")
+			//fmt.Println(message)
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
