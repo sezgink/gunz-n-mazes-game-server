@@ -39,7 +39,7 @@ type MessageCreateGame struct {
 	Player       PlayerData
 	OtherPlayers []PlayerData
 	Fires        []FireData
-	MessageType  int
+	Mtype        MessageType
 }
 
 func newMessageCreatePlayer(pData *PlayerData) []byte {
@@ -47,6 +47,23 @@ func newMessageCreatePlayer(pData *PlayerData) []byte {
 	cm.Player = *pData
 	cm.IsOwner = false
 	cm.Mtype = UPDATE_GAME
+
+	// func JSONMsg2Client(msg *Msg2Client) []byte {
+	// 	//plr, err := json.Marshal(player)
+	// 	plr, err := json.Marshal(msg)
+	// 	if err == nil {
+	// 		return plr
+	// 	}
+	// 	return nil
+	// }
+	// func JSONUpdate2Client(msg *UpdateMessage) []byte {
+	// 	//plr, err := json.Marshal(player)
+	// 	plr, err := json.Marshal(msg)
+	// 	if err == nil {
+	// 		return plr
+	// 	}
+	// 	return nil
+	// }
 
 	jsObj, err := json.Marshal(*cm)
 	if err == nil {
@@ -59,7 +76,7 @@ func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
 	cm := new(MessageCreateGame)
 	cm.Player = *pData
 	cm.OtherPlayers = otherPlayers
-	cm.Flag = 4
+	cm.Mtype = CREATE_GAME
 
 	jsObj, err := json.Marshal(*cm)
 	if err == nil {
@@ -71,47 +88,30 @@ func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
 }
 
 func createUpdateMessage(g *Game) []byte {
-	/*
-		b := make([]PlayerData, len(g.clients))
-		for cli := range g.clients {
-			b = append(b, *cli.player)
-		}
-	*/
-	b := make([]PlayerData, len(g.clients))
-	for cli := range g.clients {
-		b = append(b, *cli.player)
-	}
-	updateMessage := &UpdateMessage{
-		players2Update: b[0:len(g.clients)],
-		flag:           1,
-	}
+	// /*
+	// 	b := make([]PlayerData, len(g.clients))
+	// 	for cli := range g.clients {
+	// 		b = append(b, *cli.player)
+	// 	}
+	// */
+	// b := make([]PlayerData, len(g.clients))
+	// for cli := range g.clients {
+	// 	b = append(b, *cli.player)
+	// }
+	// updateMessage := &MessageUpdateGame{
+	// 	players2Update: b[0:len(g.clients)],
+	// 	flag:           1,
+	// }
 
-	plr, err := json.Marshal(updateMessage)
-	fmt.Println(plr)
+	// plr, err := json.Marshal(updateMessage)
+	// fmt.Println(plr)
 
-	if err == nil {
-		return plr
-	} else {
-		fmt.Println(err.Error())
+	// if err == nil {
+	// 	return plr
+	// } else {
+	// 	fmt.Println(err.Error())
 
-	}
+	// }
 	return nil
 
 }
-
-// func JSONMsg2Client(msg *Msg2Client) []byte {
-// 	//plr, err := json.Marshal(player)
-// 	plr, err := json.Marshal(msg)
-// 	if err == nil {
-// 		return plr
-// 	}
-// 	return nil
-// }
-// func JSONUpdate2Client(msg *UpdateMessage) []byte {
-// 	//plr, err := json.Marshal(player)
-// 	plr, err := json.Marshal(msg)
-// 	if err == nil {
-// 		return plr
-// 	}
-// 	return nil
-// }
