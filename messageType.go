@@ -46,24 +46,7 @@ func newMessageCreatePlayer(pData *PlayerData) []byte {
 	cm := new(MessageCreatePlayer)
 	cm.Player = *pData
 	cm.IsOwner = false
-	cm.Mtype = UPDATE_GAME
-
-	// func JSONMsg2Client(msg *Msg2Client) []byte {
-	// 	//plr, err := json.Marshal(player)
-	// 	plr, err := json.Marshal(msg)
-	// 	if err == nil {
-	// 		return plr
-	// 	}
-	// 	return nil
-	// }
-	// func JSONUpdate2Client(msg *UpdateMessage) []byte {
-	// 	//plr, err := json.Marshal(player)
-	// 	plr, err := json.Marshal(msg)
-	// 	if err == nil {
-	// 		return plr
-	// 	}
-	// 	return nil
-	// }
+	cm.Mtype = CREATE_PLAYER
 
 	jsObj, err := json.Marshal(*cm)
 	if err == nil {
@@ -87,31 +70,25 @@ func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
 	return nil
 }
 
-func createUpdateMessage(g *Game) []byte {
-	// /*
-	// 	b := make([]PlayerData, len(g.clients))
-	// 	for cli := range g.clients {
-	// 		b = append(b, *cli.player)
-	// 	}
-	// */
-	// b := make([]PlayerData, len(g.clients))
-	// for cli := range g.clients {
-	// 	b = append(b, *cli.player)
-	// }
-	// updateMessage := &MessageUpdateGame{
-	// 	players2Update: b[0:len(g.clients)],
-	// 	flag:           1,
-	// }
+func newMessageUpdateGame(g *Game) []byte {
 
-	// plr, err := json.Marshal(updateMessage)
-	// fmt.Println(plr)
+	var b []PlayerData
+	for cli := range g.clients {
+		b = append(b, *cli.player)
+	}
+	fmt.Println(b)
+	updateMessage := &MessageUpdateGame{
+		Players: b[0:len(g.clients)],
+		Mtype:   UPDATE_GAME,
+	}
 
-	// if err == nil {
-	// 	return plr
-	// } else {
-	// 	fmt.Println(err.Error())
+	jsObj, err := json.Marshal(updateMessage)
+	if err == nil {
+		return jsObj
+	} else {
+		fmt.Println(err.Error())
 
-	// }
+	}
 	return nil
 
 }
