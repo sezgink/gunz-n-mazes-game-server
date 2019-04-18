@@ -86,19 +86,31 @@ func (g *Game) runGame() {
 			g.playerCounter += 1
 			//Send client create playerMan message
 			//client.send <-
-			select {
-			case client.send <- CreatePlrCreatorMessage(client.player):
-			}
+			/*
+				select {
+				case client.send <- CreatePlrCreatorMessage(client.player):
+				}
+			*/
 			//client.send <- CreatePlrCreatorMessage(client.player)
 			//fmt.Println(CreatePlrCreatorMessage(client.player))
+
+			//otherPlayers := make([]PlayerData, len(g.clients)-1)
+			var otherPlayers []PlayerData
 
 			for cli := range g.clients {
 				if cli != client {
 					select {
 					case cli.send <- CreateCreatorMessage(client.player):
 					}
+					otherPlayers = append(otherPlayers, *cli.player)
 					//cli.send <- CreateCreatorMessage(client.player)
+					//fmt.Println("append")
+					//fmt.Println(*client.player)
 				}
+			}
+			fmt.Println(otherPlayers)
+			select {
+			case client.send <- CreateMultiCreatorMessage(client.player, otherPlayers):
 			}
 			//fmt.Println("Yeah registered")
 			/*

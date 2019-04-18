@@ -33,6 +33,40 @@ type CreatorMessage struct {
 	Flag int
 }
 
+type MultiCreatorMessage struct {
+	//IsOwner bool
+	//player2Create *PlayerData
+	//This one probably should go to data than poiniter
+	OwningPlayer   PlayerData
+	Players2Create []PlayerData
+
+	//fires2Create  []FireData
+	Flag int
+}
+
+func CreateMultiCreatorMessage(pData *PlayerData, otherPlayers []PlayerData) []byte {
+	//plr, err := json.Marshal(player)
+	//pData.isOwner = true
+
+	cm := new(MultiCreatorMessage)
+	cm.OwningPlayer = *pData
+	cm.Players2Create = otherPlayers
+	//cm.IsOwner = true
+
+	cm.Flag = 4
+
+	//fmt.Println("Cm is", *cm)
+
+	plr, err := json.Marshal(*cm)
+	if err == nil {
+		//fmt.Println("Plr is", plr)
+		return plr
+	} else {
+		fmt.Println("err is", err)
+	}
+	return nil
+}
+
 func CreatePlrCreatorMessage(pData *PlayerData) []byte {
 	//plr, err := json.Marshal(player)
 	//pData.isOwner = true
