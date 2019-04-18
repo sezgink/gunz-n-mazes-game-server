@@ -5,6 +5,7 @@
 package main
 
 import "fmt"
+import "time"
 
 type Game struct {
 	// Registered clients.
@@ -42,39 +43,19 @@ func newGame(h *Hub) *Game {
 		hub:           h,
 	}
 }
-func OnTick(g *Game) {
-	fmt.Println("Tick")
-	g.distribute <- createUpdateMessage(g)
 
-	/*
-		Msg2Client := &Msg2Client{
-			creatorMessage: new(CreatorMessage),
-			updateMessage:  new(UpdateMessage),
-		}
-	*/
-	//Msg2Client.creatorMessage.players2Create
-	/*
-		for cli := range g.clients {
-			if !cli.player.isCreated {
-				cli.send <- []byte("We have a brother")
-
-			}
-			cli.send <- []byte("We have a brother")
-		}
-	*/
+func ticker(g *Game) {
+	ticker := time.NewTicker(10000 * time.Millisecond)
+	for t := range ticker.C {
+		fmt.Println("Tick at", t)
+		g.distribute <- newMessageUpdateGame(g)
+	}
 
 }
 
 func (g *Game) runGame() {
-	fmt.Println("Game run")
+	go ticker(g)
 	for {
-		/*
-			if g.tickCounter > 1000 {
-				g.tickCounter = 0
-				fmt.Println("Tick If")
-				OnTick(g)
-			}
-		*/
 
 		select {
 		case client := <-g.register:
