@@ -133,7 +133,8 @@ func (g *Game) runGame() {
 					}
 				}
 			*/
-
+		case message := <-g.rawDataPuller:
+			fmt.Println(message)
 		}
 		//fmt.Println("End select")
 		//g.tickCounter += 1
