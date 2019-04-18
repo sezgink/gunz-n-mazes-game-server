@@ -5,115 +5,69 @@ import (
 	"fmt"
 )
 
-/*
-type CreatorMessage struct {
-	players2Create []PlayerData
-	fires2Create   []FireData
-}
-*/
+type MessageType int
 
-/*
-type CreatorMessage struct {
-	isOwner bool
-	//player2Create *PlayerData
-	//This one probably should go to data than poiniter
-	player2Create PlayerData
+const (
+	UPDATE_GAME    MessageType = 0
+	CREATE_FIRE    MessageType = 1
+	CREATE_PLAYER  MessageType = 2
+	DESTROY_PLAYER MessageType = 3
+	CREATE_GAME    MessageType = 4
+)
 
-	//fires2Create  []FireData
-	flag int
+type MessageUpdateGame struct {
+	Players []PlayerData
+	Mtype   MessageType
 }
-*/
-type CreatorMessage struct {
+
+type MessageFire struct {
+	Mtype MessageType
+}
+
+type MessageCreatePlayer struct {
 	IsOwner bool
-	//player2Create *PlayerData
-	//This one probably should go to data than poiniter
-	Player2Create PlayerData
-
-	//fires2Create  []FireData
-	Flag int
+	Player  PlayerData
+	Mtype   MessageType
 }
 
-type MultiCreatorMessage struct {
-	//IsOwner bool
-	//player2Create *PlayerData
-	//This one probably should go to data than poiniter
-	OwningPlayer   PlayerData
-	Players2Create []PlayerData
-
-	//fires2Create  []FireData
-	Flag int
+type MessageDestroyPlayer struct {
+	Player PlayerData
+	Mtype  MessageType
 }
 
-func CreateMultiCreatorMessage(pData *PlayerData, otherPlayers []PlayerData) []byte {
-	//plr, err := json.Marshal(player)
-	//pData.isOwner = true
+type MessageCreateGame struct {
+	Player       PlayerData
+	OtherPlayers []PlayerData
+	Fires        []FireData
+	MessageType  int
+}
 
-	cm := new(MultiCreatorMessage)
-	cm.OwningPlayer = *pData
-	cm.Players2Create = otherPlayers
-	//cm.IsOwner = true
+func newMessageCreatePlayer(pData *PlayerData) []byte {
+	cm := new(MessageCreatePlayer)
+	cm.Player = *pData
+	cm.IsOwner = false
+	cm.Mtype = UPDATE_GAME
 
+	jsObj, err := json.Marshal(*cm)
+	if err == nil {
+		return jsObj
+	}
+	return nil
+}
+
+func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
+	cm := new(MessageCreateGame)
+	cm.Player = *pData
+	cm.OtherPlayers = otherPlayers
 	cm.Flag = 4
 
-	//fmt.Println("Cm is", *cm)
-
-	plr, err := json.Marshal(*cm)
+	jsObj, err := json.Marshal(*cm)
 	if err == nil {
-		//fmt.Println("Plr is", plr)
-		return plr
+		return jsObj
 	} else {
 		fmt.Println("err is", err)
 	}
 	return nil
-}
-
-func CreatePlrCreatorMessage(pData *PlayerData) []byte {
-	//plr, err := json.Marshal(player)
-	//pData.isOwner = true
-
-	cm := new(CreatorMessage)
-	cm.Player2Create = *pData
-	cm.IsOwner = true
-
-	cm.Flag = 0
-
-	//fmt.Println("Cm is", *cm)
-
-	plr, err := json.Marshal(*cm)
-	if err == nil {
-		//fmt.Println("Plr is", plr)
-		return plr
-	} else {
-		fmt.Println("err is", err)
-	}
-	return nil
-}
-func CreateCreatorMessage(pData *PlayerData) []byte {
-	//plr, err := json.Marshal(player)
-
-	cm := new(CreatorMessage)
-	cm.Player2Create = *pData
-	cm.IsOwner = false
-
-	cm.Flag = 0
-
-	plr, err := json.Marshal(*cm)
-	if err == nil {
-		return plr
-	}
-	return nil
-}
-
-type UpdateMessage struct {
-	players2Update []PlayerData
-	flag           int
-}
-type DestroyMessage struct {
-	players2Destroy []PlayerData
-}
-type Msg2Client struct {
-	creatorMessage *CreatorMessage
-	updateMessage  *UpdateMessage
 }
 
 func createUpdateMessage(g *Game) []byte {
@@ -145,19 +99,19 @@ func createUpdateMessage(g *Game) []byte {
 
 }
 
-func JSONMsg2Client(msg *Msg2Client) []byte {
-	//plr, err := json.Marshal(player)
-	plr, err := json.Marshal(msg)
-	if err == nil {
-		return plr
-	}
-	return nil
-}
-func JSONUpdate2Client(msg *UpdateMessage) []byte {
-	//plr, err := json.Marshal(player)
-	plr, err := json.Marshal(msg)
-	if err == nil {
-		return plr
-	}
-	return nil
-}
+// func JSONMsg2Client(msg *Msg2Client) []byte {
+// 	//plr, err := json.Marshal(player)
+// 	plr, err := json.Marshal(msg)
+// 	if err == nil {
+// 		return plr
+// 	}
+// 	return nil
+// }
+// func JSONUpdate2Client(msg *UpdateMessage) []byte {
+// 	//plr, err := json.Marshal(player)
+// 	plr, err := json.Marshal(msg)
+// 	if err == nil {
+// 		return plr
+// 	}
+// 	return nil
+// }

@@ -111,6 +111,7 @@ func (g *Game) runGame() {
 			fmt.Println(otherPlayers)
 			select {
 			case client.send <- CreateMultiCreatorMessage(client.player, otherPlayers):
+				//case client.send <- CreatePlrCreatorMessage(client.player):
 			}
 			//fmt.Println("Yeah registered")
 			/*
