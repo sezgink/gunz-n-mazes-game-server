@@ -55,6 +55,18 @@ func newMessageCreatePlayer(pData *PlayerData) []byte {
 	return nil
 }
 
+func newMessageDestroyPlayer(pData *PlayerData) []byte {
+	cm := new(MessageDestroyPlayer)
+	cm.Player = *pData
+	cm.Mtype = DESTROY_PLAYER
+
+	jsObj, err := json.Marshal(*cm)
+	if err == nil {
+		return jsObj
+	}
+	return nil
+}
+
 func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
 	cm := new(MessageCreateGame)
 	cm.Player = *pData

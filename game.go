@@ -110,6 +110,9 @@ func (g *Game) runGame() {
 			*/
 
 		case client := <-g.unregister:
+			select {
+			case g.hub.broadcast <- newMessageDestroyPlayer(client.player):
+			}
 			if _, ok := g.clients[client]; ok {
 				delete(g.clients, client)
 				//close(client.send)
