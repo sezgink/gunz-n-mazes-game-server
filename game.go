@@ -47,7 +47,7 @@ func newGame(h *Hub) *Game {
 }
 
 func ticker(g *Game) {
-	ticker := time.NewTicker(10000 * time.Millisecond)
+	ticker := time.NewTicker(100 * time.Millisecond)
 	for t := range ticker.C {
 		fmt.Println("Tick at", t)
 		g.brodcast <- newMessageUpdateGame(g)
@@ -141,16 +141,22 @@ func (g *Game) runGame() {
 		case message := <-g.receive:
 			var typedMessage Message
 			json.Unmarshal(message.message, &typedMessage)
-			fmt.Printf("\n%s", message.message)
-			fmt.Printf("\nmessage %d", typedMessage.Mtype)
-
 			if typedMessage.Mtype == PlAYER_STATE {
-				fmt.Println("PlAYER_STATE message")
+				//fmt.Println("\n PlAYER_STATE message")
 				var playerState MessagePlayerState
 				json.Unmarshal(message.message, &playerState)
-				fmt.Printf("%f %f %f %f %f", playerState.PosX, playerState.PosY, playerState.Rot, playerState.Vx, playerState.Vy)
+				message.sender.player.PosX = playerState.PosX
+				message.sender.player.PosY = playerState.PosY
+				message.sender.player.Vx = playerState.Vx
+				message.sender.player.Vy = playerState.Vy
+				message.sender.player.Rot = playerState.Rot
+				//fmt.Printf("%f %f %f %f %f", playerState.PosX, playerState.PosX, playerState.Rot, playerState.Vx, playerState.Vy)
 			} else if typedMessage.Mtype == PLAYER_FIRE {
-				fmt.Println("PLAYER_FIRE message")
+				fmt.Println("\n PLAYER_FIRE message")
+				var playerFire MessagePlayerFire
+				json.Unmarshal(message.message, &playerFire)
+				g.hub.broadcast <- newMessageCreateFire(playerFire.PosX, playerFire.PosY, playerFire.Rot)
+				fmt.Printf("%f %f %f", playerFire.PosX, playerFire.PosX, playerFire.Rot)
 			} else {
 				fmt.Println("Unknown message")
 			}
