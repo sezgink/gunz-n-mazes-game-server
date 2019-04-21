@@ -27,7 +27,10 @@ type MessageUpdateGame struct {
 	Mtype   MessageType
 }
 
-type MessageFire struct {
+type MessageCreateFire struct {
+	PosX  float32
+	PosY  float32
+	Rot   float32
 	Mtype MessageType
 }
 
@@ -126,4 +129,17 @@ func newMessageUpdateGame(g *Game) []byte {
 	}
 	return nil
 
+}
+
+func newMessageCreateFire(posX float32, posY float32, rot float32) []byte {
+	fireData := new(MessageCreateFire)
+	fireData.PosX = posX
+	fireData.PosY = posY
+	fireData.Rot = rot
+	fireData.Mtype = CREATE_FIRE
+	jsObj, err := json.Marshal(*fireData)
+	if err == nil {
+		return jsObj
+	}
+	return nil
 }
