@@ -147,7 +147,7 @@ func (g *Game) runGame() {
 			if typedMessage.Mtype == PlAYER_STATE {
 				fmt.Println("PlAYER_STATE message")
 				var playerState MessagePlayerState
-				json.Unmarshal(typedMessage.message, &playerState)
+				json.Unmarshal(message.message, &playerState)
 				fmt.Printf("%f %f %f %f %f", playerState.PosX, playerState.PosY, playerState.Rot, playerState.Vx, playerState.Vy)
 			} else if typedMessage.Mtype == PLAYER_FIRE {
 				fmt.Println("PLAYER_FIRE message")
