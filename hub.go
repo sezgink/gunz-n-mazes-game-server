@@ -127,6 +127,7 @@ func (h *Hub) run() {
 				select {
 				case client.send <- message:
 				default:
+					h.game.unregister <- client
 					close(client.send)
 					delete(h.clients, client)
 				}
