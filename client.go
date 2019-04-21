@@ -48,6 +48,8 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+
+	player *PlayerData
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -74,7 +76,8 @@ func (c *Client) readPump() {
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		//c.hub.broadcast <- message
 		sendPack := MCMessage{sender: c, message: message}
-		c.hub.broadcast <- sendPack
+		//c.hub.broadcast <- sendPack
+		c.hub.clientPuller <- sendPack
 
 	}
 }
@@ -93,6 +96,8 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			//fmt.Println("Sending in client: Message is :")
+			//fmt.Println(message)
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
@@ -134,7 +139,9 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	//client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), player: new(PlayerData)}
+
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in

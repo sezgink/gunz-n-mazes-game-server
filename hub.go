@@ -32,7 +32,7 @@ func checkMessage(message []byte) bool {
 			panic(err)
 		}
 
-		fmt.Println(fmt.Sprintf("Player id is %d", pData.id))
+		fmt.Println(fmt.Sprintf("Player id is %d", pData.Id))
 	}
 
 	if str == "deneme" {
@@ -50,61 +50,100 @@ type Hub struct {
 	clients map[*Client]bool
 
 	// Inbound messages from the clients.
-	//broadcast chan []byte
-	broadcast chan MCMessage
+	broadcast chan []byte
+
+	//Client puller for pull player data
+	clientPuller chan MCMessage
 
 	// Register requests from the clients.
 	register chan *Client
 
 	// Unregister requests from clients.
 	unregister chan *Client
+
+	game *Game
 }
 
 func newHub() *Hub {
 	return &Hub{
-		//broadcast:  make(chan []byte),
-		broadcast:  make(chan MCMessage),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		clients:    make(map[*Client]bool),
+		broadcast:    make(chan []byte),
+		clientPuller: make(chan MCMessage),
+		register:     make(chan *Client),
+		unregister:   make(chan *Client),
+		clients:      make(map[*Client]bool),
 	}
 }
 
 func (h *Hub) run() {
+	h.game = newGame(h)
+	go h.game.runGame()
 	for {
 		select {
 		case client := <-h.register:
 			h.clients[client] = true
-			//fmt.Println("Yeah registered")
+
 			select {
-			case client.send <- []byte("Welcome brother"):
-			default:
-				close(client.send)
-				delete(h.clients, client)
+			case h.game.register <- client:
 			}
-			for cli := range h.clients {
-				if cli != client {
-					cli.send <- []byte("We have a brother")
+			//fmt.Println("Before broad")
+			//h.game.register <- client
+			/*
+				select {
+				case h.broadcast <- []byte("Registered one"):
 				}
-			}
+			*/
+			//fmt.Println("Yeah registered")
+			/*
+				select {
+				case client.send <- []byte("Welcome brother"):
+				default:
+					close(client.send)
+					delete(h.clients, client)
+				}
+				for cli := range h.clients {
+					if cli != client {
+						cli.send <- []byte("We have a brother")
+					}
+				}
+			*/
 
 		case client := <-h.unregister:
+			h.game.unregister <- client
 			if _, ok := h.clients[client]; ok {
 				delete(h.clients, client)
 				close(client.send)
 			}
 
-		case message := <-h.broadcast:
-			//checkMessage(message)
+		case message := <-h.clientPuller:
+			select {
+			case h.game.rawDataPuller <- message:
+			}
 
+		case message := <-h.broadcast:
+			//fmt.Println("Broad message firsst")
+			//fmt.Println(message)
 			for client := range h.clients {
+				//fmt.Println("Client broad")
 				select {
-				case client.send <- []byte(message.message):
+				case client.send <- message:
 				default:
 					close(client.send)
 					delete(h.clients, client)
 				}
 			}
+			//checkMessage(message)
+
+			/*
+				for client := range h.clients {
+					select {
+					case client.send <- []byte(message):
+					default:
+						close(client.send)
+						delete(h.clients, client)
+					}
+				}
+			*/
+
 		}
 	}
 }
