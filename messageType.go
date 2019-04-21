@@ -13,7 +13,14 @@ const (
 	CREATE_PLAYER  MessageType = 2
 	DESTROY_PLAYER MessageType = 3
 	CREATE_GAME    MessageType = 4
+	PlAYER_STATE   MessageType = 5
+	PLAYER_FIRE    MessageType = 6
 )
+
+type Message struct {
+	Mtype   MessageType `json:"Mtype"`
+	message json.RawMessage
+}
 
 type MessageUpdateGame struct {
 	Players []PlayerData
@@ -40,6 +47,22 @@ type MessageCreateGame struct {
 	OtherPlayers []PlayerData
 	Fires        []FireData
 	Mtype        MessageType
+}
+
+type MessagePlayerState struct {
+	PosX  float32
+	PosY  float32
+	Vx    float32
+	Vy    float32
+	Rot   float32
+	Mtype MessageType
+}
+
+type MessagePlayerFire struct {
+	PosX  float32
+	PosY  float32
+	Rot   float32
+	Mtype MessageType
 }
 
 func newMessageCreatePlayer(pData *PlayerData) []byte {

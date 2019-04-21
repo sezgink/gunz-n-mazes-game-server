@@ -77,7 +77,7 @@ func (c *Client) readPump() {
 		//c.hub.broadcast <- message
 		sendPack := MCMessage{sender: c, message: message}
 		//c.hub.broadcast <- sendPack
-		c.hub.clientPuller <- sendPack
+		c.hub.receive <- sendPack
 
 	}
 }

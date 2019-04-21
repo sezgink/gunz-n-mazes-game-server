@@ -53,7 +53,7 @@ type Hub struct {
 	broadcast chan []byte
 
 	//Client puller for pull player data
-	clientPuller chan MCMessage
+	receive chan MCMessage
 
 	// Register requests from the clients.
 	register chan *Client
@@ -66,11 +66,11 @@ type Hub struct {
 
 func newHub() *Hub {
 	return &Hub{
-		broadcast:    make(chan []byte),
-		clientPuller: make(chan MCMessage),
-		register:     make(chan *Client),
-		unregister:   make(chan *Client),
-		clients:      make(map[*Client]bool),
+		broadcast:  make(chan []byte),
+		receive:    make(chan MCMessage),
+		register:   make(chan *Client),
+		unregister: make(chan *Client),
+		clients:    make(map[*Client]bool),
 	}
 }
 
@@ -114,9 +114,9 @@ func (h *Hub) run() {
 				close(client.send)
 			}
 
-		case message := <-h.clientPuller:
+		case message := <-h.receive:
 			select {
-			case h.game.rawDataPuller <- message:
+			case h.game.receive <- message:
 			}
 
 		case message := <-h.broadcast:

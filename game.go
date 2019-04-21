@@ -4,8 +4,11 @@
 
 package main
 
-import "fmt"
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 type Game struct {
 	// Registered clients.
@@ -13,10 +16,10 @@ type Game struct {
 
 	// Inbound messages from the clients.
 	//broadcast chan []byte
-	distribute chan []byte
+	brodcast chan []byte
 
 	//pull raw player data
-	rawDataPuller chan MCMessage
+	receive chan MCMessage
 
 	// Register requests from the clients.
 	register chan *Client
@@ -33,10 +36,9 @@ type Game struct {
 
 func newGame(h *Hub) *Game {
 	return &Game{
-		//broadcast:  make(chan []byte),
-		distribute:    make(chan []byte),
+		brodcast:      make(chan []byte),
+		receive:       make(chan MCMessage),
 		register:      make(chan *Client),
-		rawDataPuller: make(chan MCMessage),
 		unregister:    make(chan *Client),
 		clients:       make(map[*Client]bool),
 		playerCounter: 0,
@@ -48,7 +50,7 @@ func ticker(g *Game) {
 	ticker := time.NewTicker(10000 * time.Millisecond)
 	for t := range ticker.C {
 		fmt.Println("Tick at", t)
-		g.distribute <- newMessageUpdateGame(g)
+		g.brodcast <- newMessageUpdateGame(g)
 	}
 
 }
@@ -118,7 +120,7 @@ func (g *Game) runGame() {
 				//close(client.send)
 			}
 
-		case message := <-g.distribute:
+		case message := <-g.brodcast:
 			//fmt.Println("Distrtubute")
 			select {
 			case g.hub.broadcast <- message:
@@ -136,8 +138,22 @@ func (g *Game) runGame() {
 					}
 				}
 			*/
-		case message := <-g.rawDataPuller:
-			fmt.Println(message)
+		case message := <-g.receive:
+			var typedMessage Message
+			json.Unmarshal(message.message, &typedMessage)
+			fmt.Printf("\n%s", message.message)
+			fmt.Printf("\nmessage %d", typedMessage.Mtype)
+
+			if typedMessage.Mtype == PlAYER_STATE {
+				fmt.Println("PlAYER_STATE message")
+				var playerState MessagePlayerState
+				json.Unmarshal(typedMessage.message, &playerState)
+				fmt.Printf("%f %f %f %f %f", playerState.PosX, playerState.PosY, playerState.Rot, playerState.Vx, playerState.Vy)
+			} else if typedMessage.Mtype == PLAYER_FIRE {
+				fmt.Println("PLAYER_FIRE message")
+			} else {
+				fmt.Println("Unknown message")
+			}
 		}
 		//fmt.Println("End select")
 		//g.tickCounter += 1
