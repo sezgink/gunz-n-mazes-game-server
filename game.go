@@ -7,7 +7,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 type Game struct {
@@ -46,17 +45,7 @@ func newGame(h *Hub) *Game {
 	}
 }
 
-func ticker(g *Game) {
-	ticker := time.NewTicker(100 * time.Millisecond)
-	for t := range ticker.C {
-		fmt.Println("Tick at", t)
-		g.brodcast <- newMessageUpdateGame(g)
-	}
-
-}
-
 func (g *Game) runGame() {
-	go ticker(g)
 	for {
 
 		select {
@@ -67,17 +56,7 @@ func (g *Game) runGame() {
 			g.clients[client] = true
 			client.player = &PlayerData{Id: g.playerCounter, PosX: 0, PosY: 0, Rot: 0, Vx: 0, Vy: 0}
 			g.playerCounter += 1
-			//Send client create playerMan message
-			//client.send <-
-			/*
-				select {
-				case client.send <- CreatePlrCreatorMessage(client.player):
-				}
-			*/
-			//client.send <- CreatePlrCreatorMessage(client.player)
-			//fmt.Println(CreatePlrCreatorMessage(client.player))
 
-			//otherPlayers := make([]PlayerData, len(g.clients)-1)
 			var otherPlayers []PlayerData
 
 			for cli := range g.clients {
@@ -94,22 +73,7 @@ func (g *Game) runGame() {
 			fmt.Println(otherPlayers)
 			select {
 			case client.send <- newMessageCreateGame(client.player, otherPlayers):
-				//case client.send <- CreatePlrCreatorMessage(client.player):
 			}
-			//fmt.Println("Yeah registered")
-			/*
-				select {
-				case client.send <- []byte("Welcome brother"):
-				default:
-					close(client.send)
-					delete(g.clients, client)
-				}
-				for cli := range g.clients {
-					if cli != client {
-						cli.send <- []byte("We have a brother")
-					}
-				}
-			*/
 
 		case client := <-g.unregister:
 			select {

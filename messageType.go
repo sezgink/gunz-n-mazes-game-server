@@ -108,7 +108,7 @@ func newMessageCreateGame(pData *PlayerData, otherPlayers []PlayerData) []byte {
 	return nil
 }
 
-func newMessageUpdateGame(g *Game) []byte {
+func newMessageUpdateGame(g *Hub) []byte {
 
 	var b []PlayerData
 	for cli := range g.clients {
